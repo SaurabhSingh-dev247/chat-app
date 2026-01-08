@@ -1,0 +1,78 @@
+.settingsWrapper {
+  position: absolute;
+  top: 53.5%;
+  left: 5.8%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.closeButton {
+  margin-top: 2px;
+  margin-right: 3px;
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  background: transparent;
+  border: none;
+  font-weight: 700;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.closeButton:hover {
+  color: #000;
+}
+
+.settingsContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #e5e5e5;
+  transition: background-color 0.2s;
+}
+
+.settingsContent:hover {
+  background-color: #b6b5b5;
+}
+
+.settingsText {
+  font-size: 15px;
+  color: #454343;
+  font-weight: 700;
+}
+
+.logoutButton {
+  background: transparent;
+  border: none;
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logoutText {
+  color: red;
+}
+
+.logoutButton:hover {
+  background-color: #fca8a8;
+}

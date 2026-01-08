@@ -1,0 +1,75 @@
+.dialog {
+  border: none;
+  border-radius: 8px;
+  padding: 0;
+  margin: auto; /* This is key for centering */
+  max-width: 90vw;
+  max-height: 90vh;
+  /* height: fit-content;
+  width: fit-content; */
+  overflow: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background-color: white;
+
+  /* Explicit positioning for centering */
+  /* position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); */
+}
+
+.dialog img {
+  border: none;
+  width: 100%;
+  height: auto;
+  display: block;
+  /* max-height: 25rem; Reduced from 30rem */
+  object-fit:contain;
+}
+
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.615);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Ensure dialog stays centered when open */
+.dialog[open] {
+  display: block;
+}
+
+/* Content wrapper */
+.dialog > * {
+  position: relative;
+}
+
+.close-btn-class {
+  position: fixed;
+  top: 10%;
+  right: 10%;
+  background: rgba(252, 0, 0, 0);
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  width: 3.2rem;
+  height: 3.2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+  color: #fe0606;
+  line-height: 1;
+  z-index: 10;
+  transform: scale(1.3);
+}
+
+.close-btn-class:hover {
+  background-color: rgb(254, 0, 0);
+  color: white;
+}
+
+.close-btn-class:active {
+  transform: scale(0.95);
+}
