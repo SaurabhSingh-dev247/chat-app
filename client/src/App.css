@@ -228,8 +228,15 @@
   align-items: center;
 }
 
-.signup-text-controller{
+.signup-text-controller {
   margin-right: 12px;
+}
+
+.signup-title {
+  font-size: 2rem;
+  text-align: center;
+  color: #000b21;
+  font-weight: 700;
 }
 
 .signin-title {
@@ -334,6 +341,7 @@
   }
 }
 
+
 select {
   width: 100%;
   padding: 10px 40px 10px 15px; /* space for custom arrow */
@@ -350,7 +358,7 @@ select:focus {
   box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
 }
 
-.error{
+.error {
   padding: 1rem;
   border: 1px solid red;
   display: flex;
@@ -363,12 +371,17 @@ select:focus {
   gap: 1rem;
 }
 
-.error button{
+.loading {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.error button {
   padding: 5px;
   background-color: transparent;
   border: none;
   border-radius: 9px;
-  &:hover{
+  &:hover {
     cursor: pointer;
     background-color: rgb(247, 178, 178);
   }
@@ -390,8 +403,26 @@ select:focus {
     justify-content: center;
   }
 
+  .btn {
+    width: 70%;
+    text-align: center;
+  }
+
+  .btn-signin:hover {
+    background-color: rgb(5, 104, 165) b0fd;
+  }
+
   .illustration-container {
     max-width: 500px;
+  }
+  .eye {
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    position: relative;
+    top: 63%;
+    right: 41%;
+    color: rgb(50, 50, 50);
   }
 }
 
@@ -429,7 +460,12 @@ select:focus {
   }
 
   .btn {
-    width: 100%;
+    width: 70%;
+    text-align: center;
+  }
+
+  .btn-signin:hover {
+    background-color: rgb(5, 104, 165) b0fd;
   }
 
   .page-title {
@@ -456,5 +492,44 @@ select:focus {
 
   .illustration-container {
     max-width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn-signin:hover {
+    background-color: rgb(5, 104, 165) b0fd;
+  }
+}
+
+@media (max-width: 390px) {
+  .landing-title {
+    font-size: 2rem;
+  }
+
+  .landing-description {
+    font-size: 1rem;
+  }
+
+  .illustration-container {
+    max-width: 100%;
+  }
+
+  .btn-controller {
+    width: 83%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn-signin:hover {
+    background-color: rgb(5, 104, 165) b0fd;
   }
 }

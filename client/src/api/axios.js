@@ -1,0 +1,11 @@
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:5193/api',
+  withCredentials: true,  // Send cookies with every request
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+export default axiosInstance;

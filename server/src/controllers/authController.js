@@ -2,61 +2,112 @@ import asyncHandler from "../util/async-handler.js";
 import validator from "validator";
 import { sendOtp, verifyOtp } from "../service/otp-service.js";
 import User from "../model/User.js";
-import RefreshToken from "../model/RefreshToken.js";
-
-const user = {
-  name: "",
-  email: "",
-  phonenumber: "",
-  avatar: "",
-};
+import bcrypt from "bcrypt";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  createJti,
+  persistRefreshToken,
+} from "../util/token.js";
 
 const signInUser = asyncHandler(async (req, res) => {
-  const { phonenumber, countrycode } = req.body;
-  const locale = "en-" + countrycode;
-  const validPhoneNumber = validator.isMobilePhone(phonenumber, locale, {
-    strictMode: true,
-  });
+  const { email, password } = req.body;
 
-  if (!validPhoneNumber) {
-    return res.status(401).json({ msg: "Invalid phone number from user." });
-  }
-
-  try {
-    const data = await sendOtp(phonenumber + "/");
-    return res.status(200).json({ msg: "Otp send successfully." });
-  } catch (error) {
-    return res.status(500).json({ msg: error.message });
-  }
-});
-
-const signUpUser = asyncHandler(async (req, res) => {
-  const { name, email, phonenumber, countrycode } = req.body;
-  user.name = name;
-  user.email = email;
-  user.phonenumber = phonenumber;
-
-  const locale = "en-" + countrycode;
   const validEmail = validator.isEmail(email);
-  const validPhoneNUmber = validator.isMobilePhone(phonenumber, locale, {
-    strictMode: true,
-  });
-  if (
-    name.trim() === "" ||
-    email.trim() === "" ||
-    phonenumber.trim() === "" ||
-    !validEmail ||
-    !validPhoneNUmber
-  ) {
+
+  if (!validEmail || password.trim() === "") {
     return res.status(401).json({ msg: "Invalid credentials from user." });
   }
 
-  try {
-    const data = await sendOtp(phonenumber + "/");
-    return res.status(200).json({ msg: "Otp send successfully." });
-  } catch (error) {
-    return res.status(500).json({ msg: error.message });
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(401).json({ msg: "Could not find a user with email." });
   }
+
+  const hashedPassword = user.password;
+  const verified = await bcrypt.compare(password, hashedPassword);
+
+  if (!verified) {
+    return res.status(401).json({ msg: "Invalid password." });
+  }
+
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  const jti = createJti();
+
+  await persistRefreshToken(
+    user,
+    refreshToken,
+    jti,
+    req.ip,
+    req.headers["user-agent"]
+  );
+
+  const cookieMaxAge = 30 * 24 * 60 * 60;
+
+  return res
+    .status(200)
+    .cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxage: cookieMaxAge,
+    })
+    .json({
+      user: { userId: user._id.toString(), userName: user.name },
+      accessToken: accessToken,
+    });
+});
+
+const signUpUser = asyncHandler(async (req, res) => {
+  const { email, name, password } = req.body;
+
+  // const locale = "en-" + countrycode;
+  const validEmail = validator.isEmail(email);
+  // const validPhoneNUmber = validator.isMobilePhone(phonenumber, locale, {
+  //   strictMode: true,
+  // });
+
+  if (name.trim() === "" || !validEmail || password.trim() === "") {
+    return res.status(401).json({ msg: "Invalid credentials from user." });
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hashed = await bcrypt.hash(password, salt);
+
+  const user = new User({
+    name,
+    email,
+    password: hashed,
+  });
+  const newUser = await user.save();
+
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+  const jti = createJti();
+
+  await persistRefreshToken(
+    newUser,
+    refreshToken,
+    jti,
+    req.ip,
+    req.headers["user-agent"]
+  );
+
+  const cookieMaxAge = 30 * 24 * 60 * 60;
+
+  return res
+    .status(201)
+    .cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxage: cookieMaxAge,
+    })
+    .json({
+      user: { userId: newUser._id.toString(), userName: newUser.name },
+      accessToken: accessToken,
+    });
 });
 
 const signUpUserVerify = asyncHandler(async (req, res) => {
@@ -105,3 +156,15 @@ const signInUserVerify = asyncHandler(async (req, res) => {
 });
 
 export { signInUser, signInUserVerify, signUpUser, signUpUserVerify };
+
+//try {
+//   const data = await sendOtp(phonenumber + "/");
+//   return res.status(200).json({ msg: "Otp send successfully." });
+// } catch (error) {
+//   return res.status(500).json({ msg: error.message });
+// }
+
+// const locale = "en-" + countrycode;
+// const validPhoneNumber = validator.isMobilePhone(phonenumber, locale, {
+//   strictMode: true,
+// });

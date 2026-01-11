@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const ConversationSchema = new Schema({
   consversationType: { type: String, enums: ["direct", "group"] },
   name: String,
-  particiapants: [Schema.Types.ObjectId],
+  participants: [Schema.Types.ObjectId],
   admins: [Schema.Types.ObjectId],
   lastmessage: String,
   lastmessageAt: Date,

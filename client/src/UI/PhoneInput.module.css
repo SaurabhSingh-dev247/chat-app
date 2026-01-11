@@ -30,12 +30,12 @@
   background-color: rgb(241, 235, 235);
   border-radius: 8px;
   font-size: 1rem;
-  color: rgb(0, 0, 0);
+  color: rgb(35, 33, 33);
   &:focus {
     outline: 2px solid #0467e0;
   }
   &::placeholder {
-    color: #3d434a;
+    color: #697077;
     font-size: 1rem;
   }
 }

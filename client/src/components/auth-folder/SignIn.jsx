@@ -1,30 +1,66 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useState } from "react";
-import { openSignUp } from "../../store/auth-slice.js";
-import PhoneInput from "../../UI/PhoneInput";
-import { validatePhoneNumber } from "../../util/validator.js";
+import { openSignUp, openDashBoard, setUser } from "../../store/auth-slice.js";
+import PasswordInput from "../../UI/PasswordInput/PasswordInput.jsx";
+import Input from "../../UI/Input.jsx";
+import Error from "../../UI/Error/Error.jsx";
+import axiosInstance from "../../api/axios";
+import validator from "validator";
 
 export default function SignIn() {
   const dispatch = useDispatch();
-  const phoneNumber = useSelector((state) => state.auth.phoneNumber);
-  const dialCode = useSelector((state) => state.auth.dialCode);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    const trimmedPhNum = phoneNumber.trim();
-    const trimmedDialCode = dialCode.trim();
+  const buttonClass = `btn btn-signin${isLoading ? " loading" : ""}`;
 
-    if (
-      trimmedPhNum &&
-      trimmedDialCode &&
-      validatePhoneNumber(trimmedDialCode, trimmedPhNum)
-    ) {
-      ///Do something.
+  // Form validation state
+  const isFormValid = validator.isEmail(email) && password.trim() !== "";
+
+  function handleSubmit(e){
+    e.preventDefault();
+  }
+
+  async function handleSignIn(e) {
+    e.preventDefault();
+
+    // Better validation with specific error messages
+    if (!validator.isEmail(email)) {
+      setError("Please enter a valid email address.");
       return;
-    } else {
-      setError("Enter a valid phone number.");
+    }
+
+    if (!password.trim()) {
+      setError("Please enter your password.");
       return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const response = await axiosInstance.post("/auth/signin", {
+        email,
+        password,
+      });
+
+      // Clear form on success
+      setEmail("");
+      setPassword("");
+
+      dispatch(setUser(response.data));
+      dispatch(openDashBoard());
+    } catch (error) {
+      // Better error handling
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.message ||
+        "An unexpected error occurred. Please try again.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -34,23 +70,54 @@ export default function SignIn() {
         <div className="signin-text-controller">
           <h2 className="signin-title">Sign In</h2>
         </div>
-        {error && (
-          <p className="error">
-            <span>{error}</span>{" "}
-            <button onClick={() => setError("")}>❌</button>
-          </p>
-        )}
-        <PhoneInput errCallback={setError} />
-        <div className="btn-controller">
-          <button className="btn btn-signin">Sign In</button>
+
+        {error && <Error error={error} onClose={() => setError("")} />}
+
+        <div className="input-container">
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            label="Email:"
+            placeholder="test@test.com"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setError("");
+            }}
+          />
+          <PasswordInput
+            id="password"
+            name="password"
+            label="Password:"
+            placeholder="●●●●●●●●"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setError("");
+            }}
+          />
         </div>
+
+        <div className="btn-controller">
+          <button
+            type="submit"
+            className={buttonClass}
+            disabled={isLoading || !isFormValid}
+            onClick={handleSignIn}
+          >
+            {isLoading ? "Signing In..." : "Sign In"}
+          </button>
+        </div>
+
         <div className="auth-nav-controller">
           <p className="auth-nav-text">New user?</p>
           <button
+            type="button"
             onClick={() => dispatch(openSignUp())}
             className="auth-nav-btn"
           >
-            Sign Up
+            SignUp
           </button>
         </div>
       </div>

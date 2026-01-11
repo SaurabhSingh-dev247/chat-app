@@ -7,9 +7,9 @@ export default function MicIcon({ style }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       style={{ ...style }}
     >
       <rect x="9" y="2" width="6" height="11" rx="3" />

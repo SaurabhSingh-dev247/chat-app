@@ -23,12 +23,10 @@ export function generateAccessToken(user) {
   return jwt.sign(payload, process.env.ACCESS_SECRET, { expiresIn: "1d" });
 }
 
-export function generateRefreshToken(user) {
-  const payload = { userId: user._id.toString(), userName: user.name };
+export function generateRefreshToken(user, jti) {
+  const payload = { userId: user._id.toString(), jti };
   return jwt.sign(payload, process.env.REFRESH_SECRET, { expiresIn: "30d" });
 }
-
-export function persistRefreshToken() {}
 
 export async function persistRefreshToken(
   user,
@@ -37,7 +35,7 @@ export async function persistRefreshToken(
   ip,
   userAgent
 ) {
-  const expirySeconds = 7 * 60 * 60 * 24;
+  const expirySeconds = 30 * 60 * 60 * 24;
   const tokenHash = hashToken(refreshToken);
   const expiresAt = new Date(Date.now() + expirySeconds * 1000);
   await RefreshToken.create({
@@ -53,10 +51,10 @@ export async function persistRefreshToken(
 export async function rotateRefreshToken(req, res, oldDoc, user) {
   oldDoc.revokedAt = new Date();
   const newJti = createJti();
-  oldDoc.replacedBy = jti;
+  oldDoc.replacedBy = newJti;
   await oldDoc.save();
   const newAccessToken = generateAccessToken(user);
-  const newRefreshToken = generateRefreshToken(user);
+  const newRefreshToken = generateRefreshToken(user, newJti);
 
   persistRefreshToken(
     user,

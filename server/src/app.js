@@ -14,20 +14,27 @@ const MONGODB_URI = process.env.MONGODB_CONNECTION_STRING;
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
+app.use(cookieParser());
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
   })
 );
 app.use(express.json());
-app.use(cookieParser());
+
 
 app.use("/api/auth", authRouter);
 
-app.get("/", (req, res) => {
-  res.json({ msg: "App is running successfully." });
+wss.on("connection", (ws) => {
+  console.log("USER CONNECTED.");
+  ws.on("message", (message) => {
+    const data = JSON.parse(message);
+    console.log(typeof data.type, data);
+    ws.emit("Hello, World!");
+  });
 });
 
 mongoose

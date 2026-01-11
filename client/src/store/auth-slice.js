@@ -1,13 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  dialCode: "+91",
+  phoneNumber: "",
   isSignInOpen: true,
   isSignUpOpen: false,
-  phoneNumber: "",
-  dialCode: "+91",
+  isVerificationOpen: false,
+  dashBoardOpen: false,
+  user: {},
 };
-
-// console.log("Dial code from store: ", initialState.dialCode)
 
 export const authSlice = createSlice({
   name: "auth",
@@ -27,9 +28,21 @@ export const authSlice = createSlice({
     setDialCode(state, action) {
       state.dialCode = action.payload;
     },
+    openDashBoard(state) {
+      state.dashBoardOpen = true;
+    },
+    setUser(state, action) {
+      state.user = { ...action.payload };
+    },
   },
 });
 
-export const { openSignIn, openSignUp, setPhoneNumber, setDialCode } =
-  authSlice.actions;
+export const {
+  openSignIn,
+  openSignUp,
+  setPhoneNumber,
+  setDialCode,
+  openDashBoard,
+  setUser,
+} = authSlice.actions;
 export default authSlice.reducer;

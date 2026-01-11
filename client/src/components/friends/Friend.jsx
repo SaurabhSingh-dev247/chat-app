@@ -1,11 +1,11 @@
 import styles from "./Friend.module.css";
 import profile from "../../assets/profile-1.jpg";
 
-export default function FriendCard() {
+export default function FriendCard({ onImageSelect }) {
   return (
     <li className={styles["friend-card"]}>
       <div className={styles["user-profile"]}>
-        <img src={profile} />
+        <img src={profile} onClick={onImageSelect} />
       </div>
       <div className={styles["user-info"]}>
         <div className={styles["user-id"]}>

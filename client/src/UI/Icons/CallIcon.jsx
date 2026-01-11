@@ -36,9 +36,9 @@ export default function CallIcon({
            c.83.27 1.69.47 2.59.59
            A2 2 0 0 1 22 16.92z"
         stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

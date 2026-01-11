@@ -13,9 +13,9 @@ export default function PinnedMessagesIcon() {
       <path
         d="M14 3l7 7-2 2-3-3-4 4v4l-2 2v-6l4-4-3-3 2-2z"
         stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

@@ -10,16 +10,16 @@ const UserSchema = new Schema({
     required: true,
     unique: true,
   },
-  phoneNumber: {
+  password: {
     type: String,
     required: true,
     unique: true,
   },
   avatar: String,
-  status: { type: String, enum: ["online", "offline", "awat"] },
+  status: { type: String, enum: ["online", "offline", "away"] },
   lastSeen: Date,
   createdAt: { type: Date, default: Date.now },
-  updatedAt: Date,
+  updatedAt: { type: Date, default: Date.now },
 });
 
 export default mongoose.model("User", UserSchema);

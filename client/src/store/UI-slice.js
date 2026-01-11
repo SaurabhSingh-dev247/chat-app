@@ -7,6 +7,7 @@ const initialState = {
   activeNav: "message",
   hoveredNav: "",
   logoutTabOpen: false,
+  counter: 90,
 };
 
 export const UISlice = createSlice({
@@ -14,7 +15,6 @@ export const UISlice = createSlice({
   initialState: initialState,
   reducers: {
     openModal(state, action) {
-      
       if (action.payload && action.payload.image) {
         state.modalOpen = true;
         state.openedImageSrc = action.payload.image;
@@ -44,6 +44,13 @@ export const UISlice = createSlice({
     closeLogoutTab(state) {
       state.logoutTabOpen = false;
     },
+    decrementCouter(state) {
+      if (state.counter > 0) {
+        state.counter -= 1;
+      } else {
+        return;
+      }
+    },
   },
 });
 
@@ -56,7 +63,7 @@ export const {
   setHoveredNav,
   openLogoutTab,
   closeLogoutTab,
+  decrementCouter,
 } = UISlice.actions;
 
 export default UISlice.reducer;
-

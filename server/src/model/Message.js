@@ -10,6 +10,7 @@ const MessageSchema = new Schema({
     type: String,
     enums: ["text", "image", "file", "video"],
     default: "text",
+    required: true,
   },
   text: String,
   attachments: {
@@ -18,7 +19,7 @@ const MessageSchema = new Schema({
   },
   sender: Schema.Types.ObjectId,
   readBy: [Schema.Types.ObjectId],
-  replyTo: ObjectId,
+  replyTo: Schema.Types.ObjectId,
   createAt: Date,
   updatedAt: Date,
   isDeleted: Boolean,

@@ -26,7 +26,12 @@ function Modal({ open, children, onClose }) {
   }
 
   return createPortal(
-    <dialog className={styles["dialog"]} ref={dialog} onClose={handleClose}>
+    <dialog
+      className={styles["dialog"]}
+      ref={dialog}
+      onClose={handleClose}
+      
+    >
       {modalOpen && (
         <button
           onClick={handleClose}

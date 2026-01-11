@@ -2,20 +2,14 @@
   border: none;
   border-radius: 8px;
   padding: 0;
-  margin: auto; /* This is key for centering */
+  margin: auto;
   max-width: 90vw;
   max-height: 90vh;
-  /* height: fit-content;
-  width: fit-content; */
+
   overflow: auto;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  background-color: white;
-
-  /* Explicit positioning for centering */
-  /* position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); */
+  background-color: transparent;
+  backdrop-filter:unset;
 }
 
 .dialog img {
@@ -23,8 +17,8 @@
   width: 100%;
   height: auto;
   display: block;
-  /* max-height: 25rem; Reduced from 30rem */
-  object-fit:contain;
+
+  object-fit: contain;
 }
 
 .dialog::backdrop {
@@ -38,7 +32,6 @@
   display: block;
 }
 
-/* Content wrapper */
 .dialog > * {
   position: relative;
 }

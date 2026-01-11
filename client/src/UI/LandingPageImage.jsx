@@ -2,7 +2,7 @@ export default function LandingPageImage() {
   return (
     <div className="illustration-container">
       <svg
-        width="100%"
+        width="auto"
         height="auto"
         viewBox="0 0 800 600"
         fill="none"

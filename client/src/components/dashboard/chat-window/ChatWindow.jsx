@@ -14,14 +14,20 @@ export default function ChatWindow() {
   const chatEndRef = useRef(null);
   const modalOpen = useSelector((state) => state.ui.modalOpen);
   const openedImage = useSelector((state) => state.ui.openedImageSrc);
+  const wss = new WebSocket("ws://localhost:5193");
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
+    wss.onopen = () => {
+      console.log("Connected.");
+    };
     scrollToBottom();
   }, []);
+
+  function handleMessageInput() {}
 
   return (
     <>
