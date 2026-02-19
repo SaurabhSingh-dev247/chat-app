@@ -1,29 +1,24 @@
 import styles from "./PhoneInput.module.css";
 import PHONE_COUNTRIES from "../data/countries-dataset";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setDialCode, setPhoneNumber } from "../store/auth-slice";
 
-export default function PhoneInput({errCallback}) {
+export default function PhoneInput({ errCallback }) {
   const defaultCountry = PHONE_COUNTRIES.find(
-    (country) => country.name === "India"
+    (country) => country.name === "India",
   );
-  const dispatch = useDispatch();
-
   const [selectedCountry, setSelectedCountry] = useState(defaultCountry);
   const signUpOpen = useSelector((state) => state.auth.isSignUpOpen);
 
   function handleCountryChange(pickedCountry) {
     const country = PHONE_COUNTRIES.find(
-      (country) => country.name === pickedCountry
+      (country) => country.name === pickedCountry,
     );
 
     setSelectedCountry(country);
-    dispatch(setDialCode(country.dialCode));
   }
 
   function handlePhoneNumberChange(phNumber) {
-    dispatch(setPhoneNumber(phNumber));
+    console.log("Hello world");
   }
 
   return (

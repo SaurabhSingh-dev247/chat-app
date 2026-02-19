@@ -3,8 +3,9 @@ import { Download } from "lucide-react"; // or use any download icon
 import avatar from "../../../assets/profile-2.jpg";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../../store/UI-slice";
+import getDate from "../../../util/date";
 
-export function UserMessageCard({ message, timestamp, media }) {
+export function UserMessageCard({ message, timestamp, media, date }) {
   const dispatch = useDispatch();
 
   const handleDownload = (e) => {
@@ -39,6 +40,7 @@ export function UserMessageCard({ message, timestamp, media }) {
           </div>
         )}
         {message && <p className={styles["message-text"]}>{message}</p>}
+        {date && <span className={styles["message-time"]}>{date}</span>}
         {timestamp && (
           <span className={styles["message-time"]}>{timestamp}</span>
         )}
@@ -50,9 +52,10 @@ export function UserMessageCard({ message, timestamp, media }) {
 export function UserFriendMessageCard({
   message,
   timestamp,
-  userName = "Friend",
-  userAvatar,
+  userName,
+  avatar,
   media,
+  date,
 }) {
   const dispatch = useDispatch();
 
@@ -70,9 +73,11 @@ export function UserFriendMessageCard({
   return (
     <li className={styles["message-item-friend"]}>
       <div className={styles["friend-message"]}>
-        <div className={styles["message-avatar"]}>
-          <img src={avatar} alt={`${userName}'s avatar`} />
-        </div>
+        {avatar && (
+          <div className={styles["message-avatar"]}>
+            <img src={avatar} alt={`friend avatar`} />
+          </div>
+        )}
         <div className={styles["message-content"]}>
           <div
             className={`${styles["message-bubble"]} ${styles["message-bubble-friend"]}`}
@@ -93,8 +98,11 @@ export function UserFriendMessageCard({
               </div>
             )}
             {message && <p className={styles["message-text"]}>{message}</p>}
+            {date && <span className={styles["message-time"]}>{date}</span>}
             {timestamp && (
-              <span className={styles["message-time"]}>{timestamp}</span>
+              <>
+                <span className={styles["message-time"]}>{timestamp}</span>
+              </>
             )}
           </div>
         </div>

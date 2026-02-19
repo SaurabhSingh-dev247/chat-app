@@ -1,21 +1,23 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useState } from "react";
 import Input from "../../UI/Input";
 import { openSignIn, openDashBoard, setUser } from "../../store/auth-slice";
 import PhoneInput from "../../UI/PhoneInput";
 import PasswordInput from "../../UI/PasswordInput/PasswordInput.jsx";
+import FileInput from "../../UI/FileInput/FileInput.jsx";
 import Error from "../../UI/Error/Error.jsx";
 import validator from "validator";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
   const dispatch = useDispatch();
-  const dialCode = useSelector((state) => state.auth.dialCode);
-  const phoneNumber = useSelector((state) => state.auth.phoneNumber);
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [file, setFile] = useState(undefined);
   const [error, setError] = useState("");
 
   const buttonClass = `btn btn-signin${isLoading ? " loading" : ""}`;
@@ -29,7 +31,12 @@ export default function SignUp() {
 
     const validEmail = validator.isEmail(email);
 
-    if (validEmail && password.trim() !== "" && userName.trim() !== "") {
+    if (
+      validEmail &&
+      password.trim() !== "" &&
+      userName.trim() !== "" &&
+      file
+    ) {
       try {
         setIsLoading(true);
         const response = await axios.post(
@@ -38,21 +45,38 @@ export default function SignUp() {
             email,
             name: userName,
             password,
+            avatar: file,
           },
-          { withCredentials: true }
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+            withCredentials: true,
+          },
         );
-        console.log(response);
         setEmail("");
         setPassword("");
         setUserName("");
         dispatch(setUser(response.data));
         dispatch(openDashBoard());
+        navigate("/dashboard");
       } catch (error) {
         console.log(error);
         setError(error.message);
       } finally {
         setIsLoading(false);
       }
+    } else if (!file && !validEmail && !password.trim() && !userName.trim()) {
+      setError("Fill up all the fields.");
+      return;
+    } else if (!validEmail && file && password.trim() && userName.trim()) {
+      setError("Enter you email.");
+      return;
+    } else if (!password.trim() && userName.trim() && validEmail && file) {
+      setError("Enter you password.");
+      return;
+    } else if (!userName.trim() && validEmail && file && password.trim()) {
+      setError("Enter your user name.");
+    } else if (!file && password.trim() && userName.trim() && validEmail) {
+      setError("Upload your avatar.");
     } else {
       setError("Enter valid credentials.");
       return;
@@ -68,18 +92,9 @@ export default function SignUp() {
         {error && <Error error={error} onClose={() => setError("")} />}
         <div className="input-container">
           <Input
-            id="user-name"
-            label="User Name:"
-            placeholder="john doe"
-            value={userName}
-            onChange={(e) => {
-              setUserName(e.target.value);
-              setError("");
-            }}
-          />
-          <Input
             id="email"
             label="Email:"
+            name="email"
             placeholder="test@test.com"
             value={email}
             onChange={(e) => {
@@ -87,7 +102,16 @@ export default function SignUp() {
               setError("");
             }}
           />
-
+          <Input
+            id="user-name"
+            label="FullName:"
+            placeholder="john doe"
+            value={userName}
+            onChange={(e) => {
+              setUserName(e.target.value);
+              setError("");
+            }}
+          />
           <PasswordInput
             id="password"
             name="password"
@@ -99,6 +123,7 @@ export default function SignUp() {
               setError("");
             }}
           />
+          <FileInput onFileChange={setFile} />
         </div>
         <div className="btn-controller">
           <button

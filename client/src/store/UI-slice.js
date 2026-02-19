@@ -7,7 +7,7 @@ const initialState = {
   activeNav: "message",
   hoveredNav: "",
   logoutTabOpen: false,
-  counter: 90,
+  searchOpen: false,
 };
 
 export const UISlice = createSlice({
@@ -44,12 +44,12 @@ export const UISlice = createSlice({
     closeLogoutTab(state) {
       state.logoutTabOpen = false;
     },
-    decrementCouter(state) {
-      if (state.counter > 0) {
-        state.counter -= 1;
-      } else {
-        return;
-      }
+
+    openSearch(state) {
+      state.searchOpen = true;
+    },
+    closeSearch(state) {
+      state.searchOpen = false;
     },
   },
 });
@@ -63,7 +63,8 @@ export const {
   setHoveredNav,
   openLogoutTab,
   closeLogoutTab,
-  decrementCouter,
+  openSearch,
+  closeSearch,
 } = UISlice.actions;
 
 export default UISlice.reducer;

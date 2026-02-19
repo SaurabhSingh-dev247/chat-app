@@ -41,6 +41,12 @@ button {
     background-color: rgb(0, 20, 67);
     color: white;
   }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: none;
+  }
 }
 
 .logoutButton {
@@ -49,9 +55,14 @@ button {
   background-color: white;
   color: red;
 
-   &:hover {
+  &:hover {
     background-color: rgb(250, 2, 2);
     color: white;
   }
 
+  &:disabled {
+    cursor: not-allowed;
+    background-color: rgb(93, 0, 0);
+    color: rgb(93, 0, 0);
+  }
 }

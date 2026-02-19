@@ -9,8 +9,8 @@
 }
 
 .spinner {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   border: 4px solid #f0f0f0;
   border-top: 4px solid #667eea;
   border-radius: 50%;
@@ -27,8 +27,8 @@
 }
 
 .loaderText {
-  color: #fffbfb;
-  font-size: 1.3rem;
+  color: #232222;
+  font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
 }

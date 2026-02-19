@@ -5,7 +5,7 @@ export default function OtpInput() {
   const inputs = useRef([]);
   const [otp, setOtp] = useState(Array(6).fill(""));
   const length = otp.length;
-
+  
   const handleChange = (e, index) => {
     const { value } = e.target;
 
@@ -31,7 +31,7 @@ export default function OtpInput() {
       const newOtp = [...otp];
       newOtp[index] = "";
       setOtp(newOtp);
-      if (index !== 0) {
+      if (index > 0) {
         inputs.current[index - 1].focus();
       }
       if (index === 0) {

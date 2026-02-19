@@ -1,0 +1,30 @@
+.input-controller {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.selected-image-container {
+  height: 80px;
+  width: 80px;
+}
+
+.selected-image-container img {
+  height: 100%;
+  width: 100%;
+  border-radius: 0.5rem;
+}
+
+.avatar-input {
+  padding: 1rem;
+  height: 90px;
+  width: 202px;
+  border: 3px dashed rgb(20, 20, 48);
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}

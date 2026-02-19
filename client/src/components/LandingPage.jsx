@@ -1,18 +1,23 @@
-import Header from "./Header";
-import Home from "./Home";
-import Auth from "./auth-folder/Auth";
-import About from "./About";
+import Header from "./Header.jsx";
+import Home from "./Home.jsx";
+import Auth from "./auth-folder/Auth.jsx";
+import About from "./About.jsx";
+import DashBoard from "../components/dashboard/DashBoard.jsx";
 import { Routes, Route } from "react-router-dom";
 
 export default function LandingPage() {
   return (
-    <div className="app-container">
+    <main className="app-container">
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/auth" element={<Auth />} />
       </Routes>
-    </div>
+    </main>
   );
 }
+
+/* {!isPageLoading && isDashboardOpen && Object.keys(user).length > 0 && (
+          <Route path="/dashboard" element={<DashBoard />} />
+        )} */

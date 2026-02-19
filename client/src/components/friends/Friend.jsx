@@ -1,21 +1,53 @@
 import styles from "./Friend.module.css";
-import profile from "../../assets/profile-1.jpg";
 
-export default function FriendCard({ onImageSelect }) {
+export default function FriendCard({
+  friendAvatar,
+  friendName,
+  friendLastMessage,
+  friendLastActiveDate,
+  friendLastActiveTime,
+  friendMessagesCount,
+  onImageSelect,
+  onSelect,
+  isSelected,
+  isActiveToday,
+  isActiveRightNow,
+}) {
   return (
-    <li className={styles["friend-card"]}>
+    <li
+      className={`${styles["friend-card"]} ${isSelected ? styles["selected"] : ""}`}
+      onClick={onSelect}
+    >
       <div className={styles["user-profile"]}>
-        <img src={profile} onClick={onImageSelect} />
+        <img src={friendAvatar} onClick={onImageSelect} />
       </div>
       <div className={styles["user-info"]}>
         <div className={styles["user-id"]}>
-          <span className={styles["user-name"]}>Saurabh Singh</span>
-          <span className={styles["user-last-message"]}>Hii!</span>
+          <span className={styles["user-name"]}>{friendName}</span>
+          <span className={styles["user-last-message"]}>
+            {friendLastMessage}
+          </span>
         </div>
-        <div className={styles["user-last-active-displayer"]}>
-          <span className={styles["last-active-time"]}>09:30am</span>
-          <span className={styles["user-messages-count"]}>4</span>
-        </div>
+        {isActiveRightNow && (
+          <span className={`${styles["active-now"]}`}>active</span>
+        )}
+        {!isActiveRightNow && (
+          <div className={styles["user-last-active-displayer"]}>
+            <p className={styles["last-active-time"]}>
+              <span
+                className={`${isActiveToday ? styles["today-active"] : ""}`}
+              >
+                {friendLastActiveDate}
+              </span>{" "}
+              <span>{friendLastActiveTime}</span>
+            </p>
+          </div>
+        )}
+        {friendMessagesCount && (
+          <span className={styles["user-messages-count"]}>
+            {friendMessagesCount}
+          </span>
+        )}
       </div>
     </li>
   );

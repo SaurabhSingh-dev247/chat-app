@@ -139,18 +139,7 @@
   transform: translateY(-2px);
 }
 
-/* ========== Illustration Styles ========== */
-/* .illustration-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 600px;
-}
 
-.illustration {
-  max-width: 600px;
-} */
 
 /* ========== Page Container (About & Sign In) ========== */
 .page-container {

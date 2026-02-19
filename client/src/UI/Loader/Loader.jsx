@@ -4,7 +4,7 @@ export default function Loader() {
   return (
     <div className={styles.container}>
       <div className={styles.spinner}></div>
-      <p className={styles.loaderText}>Authorizing user...</p>
+      <p className={styles.loaderText}>Loading...</p>
     </div>
   );
 }

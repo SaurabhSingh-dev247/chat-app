@@ -1,7 +1,7 @@
 .settingsWrapper {
-  position: absolute;
-  top: 53.5%;
-  left: 5.8%;
+  position: relative;
+  top: -28%;
+  left: 125%;
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

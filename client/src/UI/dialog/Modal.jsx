@@ -21,20 +21,18 @@ function Modal({ open, children, onClose }) {
     }
   }, [open]);
 
-  function handleClose() {
-    onClose();
-  }
+  
 
   return createPortal(
     <dialog
       className={styles["dialog"]}
       ref={dialog}
-      onClose={handleClose}
+      onClose={onClose}
       
     >
       {modalOpen && (
         <button
-          onClick={handleClose}
+          onClick={onClose}
           className={styles["close-btn-class"]}
           aria-label="Close modal"
         >

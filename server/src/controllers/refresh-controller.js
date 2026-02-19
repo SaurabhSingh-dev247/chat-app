@@ -20,11 +20,12 @@ const refreshSessionToken = asyncHandler(async function (req, res) {
 
   const tokenHash = hashToken(incominSessionToken);
 
-  const tokenDoc = await RefreshToken.find({
-    tokenHash,
+  const tokenDoc = await RefreshToken.findOne({
     user: decoded.userId,
+    jti: decoded.jti,
+    tokenHash,
   })
-    .populate("user")
+    .populate("user", "username")
     .exec();
 
   if (!tokenDoc || tokenDoc.length === 0) {
@@ -33,25 +34,20 @@ const refreshSessionToken = asyncHandler(async function (req, res) {
       .json({ msg: "Could not find any document in the db." });
   }
 
-  if (tokenDoc[0].revokedAt) {
+  if (tokenDoc.revokedAt) {
     return res.status(401).json({ message: "Token has been already used." });
   }
 
-  if (tokenDoc[0].expiresAt < new Date()) {
+  if (tokenDoc.expiresAt < new Date()) {
     res.status(401).json({ message: "Token has expired." });
   }
 
-  const result = await rotateRefreshToken(
-    req,
-    res,
-    tokenDoc[0],
-    tokenDoc[0].user
-  );
+  const result = await rotateRefreshToken(req, res, tokenDoc, tokenDoc.user);
   return res.json({
     accessToken: result.accessToken,
     user: {
-      userId: tokenDoc[0].user._id.toString(),
-      userName: tokenDoc[0].user.name.toString(),
+      userId: tokenDoc.user._id.toString(),
+      userName: tokenDoc.user.username,
     },
   });
 });

@@ -52,6 +52,7 @@
 }
 
 .active-friend-name {
+  width: auto;
   font-size: 2.8rem;
   color: rgb(0, 115, 255);
 }
@@ -59,6 +60,12 @@
 .active-friend-status {
   font-size: 1.1rem;
   color: rgb(0, 124, 0);
+  font-weight: 600;
+}
+
+.inactive-friend-status {
+  font-size: 1.1rem;
+  color: rgb(134, 134, 134);
   font-weight: 600;
 }
 
@@ -71,20 +78,25 @@
 
 .user-chats-wrapper {
   margin-top: 0.5rem;
-  flex: 1; /* Take remaining space */
+  flex: 1;
   width: 100%;
   list-style: none;
-  overflow-y: auto; /* Changed from scroll to auto */
+  overflow-y: auto; 
   overflow-x: hidden;
   border-radius: 1rem;
   background-color: rgb(244, 241, 241);
   display: flex;
   flex-direction: column;
   padding: 1rem 0;
-
-  /* Hide scrollbar for the main container */
+  height: 580px;
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+#scrollable {
+  height: 100%;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .user-chats-wrapper::-webkit-scrollbar {

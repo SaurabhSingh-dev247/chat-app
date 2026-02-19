@@ -1,6 +1,7 @@
 import styles from "./DashboardNav.module.css";
 import AppLogo from "../../../UI/AppLogo";
 import icon from "../../../assets/icon.png";
+import SearchIcon from "../../../UI/Icons/SearchIcon.jsx";
 import NavButton from "../../../UI/Icons/NavButton";
 import MessageIcon from "../../../UI/Icons/MessageIcon";
 import ActivityIcon from "../../../UI/Icons/ActivityIcon";
@@ -10,12 +11,15 @@ import Settings from "../../settings/Settings";
 import Modal from "../../../UI/dialog/Modal.jsx";
 import Logout from "../../logout/Logout.jsx";
 import { useSelector, useDispatch } from "react-redux";
+import SearchInput from "../../../UI/SearchInput.jsx";
 import {
   closeSetting,
   setActiveNav,
   setHoveredNav,
   openLogoutTab,
   closeLogoutTab,
+  openSearch,
+  closeSearch,
 } from "../../../store/UI-slice.js";
 
 export default function DashBoardNav() {
@@ -23,12 +27,24 @@ export default function DashBoardNav() {
   const activeButton = useSelector((state) => state.ui.activeNav);
   const isHovered = useSelector((state) => state.ui.hoveredNav);
   const logoutOpen = useSelector((state) => state.ui.logoutTabOpen);
+  const searchOpen = useSelector((state) => state.ui.searchOpen);
+  const userData = useSelector((state) => state.auth.userData);
 
   return (
     <>
-      <Modal open={logoutOpen} onClose={() => dispatch(closeLogoutTab())}>
-        {logoutOpen && (
+      <Modal
+        open={(logoutOpen || searchOpen) && userData}
+        onClose={() => {
+          dispatch(closeLogoutTab());
+          dispatch(closeSearch());
+          dispatch(setActiveNav({ activeNav: "message" }));
+        }}
+      >
+        {logoutOpen && userData && (
           <Logout onLogoutClose={() => dispatch(closeLogoutTab())} />
+        )}
+        {searchOpen && userData && (
+          <SearchInput onClose={() => dispatch(closeSearch())} />
         )}
       </Modal>
       <nav className={styles["chat-nav"]}>
@@ -86,6 +102,22 @@ export default function DashBoardNav() {
             <SettingIcon
               active={activeButton === "setting"}
               hovered={isHovered === "setting"}
+            />
+          </NavButton>
+          <NavButton
+            onClick={() => {
+              dispatch(setActiveNav({ activeNav: "search" }));
+              dispatch(openSearch());
+            }}
+            onMouseEnter={() =>
+              dispatch(setHoveredNav({ hoveredNav: "search" }))
+            }
+            onMouseLeave={() => dispatch(setHoveredNav({ hoveredNav: "" }))}
+            active={activeButton === "search"}
+          >
+            <SearchIcon
+              active={activeButton === "search"}
+              hovered={isHovered === "search"}
             />
           </NavButton>
         </div>

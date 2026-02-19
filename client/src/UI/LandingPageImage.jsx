@@ -3,7 +3,9 @@ export default function LandingPageImage() {
     <div className="illustration-container">
       <svg
         width="auto"
-        height="auto"
+        style={{
+          height: "auto",
+        }}
         viewBox="0 0 800 600"
         fill="none"
         className="illustration"

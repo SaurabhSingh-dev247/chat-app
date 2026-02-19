@@ -9,9 +9,11 @@ import {
   createJti,
   persistRefreshToken,
 } from "../util/token.js";
+import generateUserName from "../util/generate-username.js";
+import fs from "fs/promises";
 
 const signInUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
 
   const validEmail = validator.isEmail(email);
 
@@ -19,152 +21,112 @@ const signInUser = asyncHandler(async (req, res) => {
     return res.status(401).json({ msg: "Invalid credentials from user." });
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email, username });
 
   if (!user) {
-    return res.status(401).json({ msg: "Could not find a user with email." });
+    return res.status(401).json({ msg: "Could not find a user." });
   }
 
-  const hashedPassword = user.password;
+  const hashedPassword = user.hashed;
   const verified = await bcrypt.compare(password, hashedPassword);
 
   if (!verified) {
     return res.status(401).json({ msg: "Invalid password." });
   }
 
-  const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user);
-
   const jti = createJti();
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user, jti);
 
-  await persistRefreshToken(
-    user,
-    refreshToken,
-    jti,
-    req.ip,
-    req.headers["user-agent"]
-  );
+  // await persistRefreshToken(
+  //   user,
+  //   refreshToken,
+  //   jti,
+  //   req.ip,
+  //   req.headers["user-agent"],
+  // );
 
   const cookieMaxAge = 30 * 24 * 60 * 60;
 
-  return res
-    .status(200)
-    .cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      maxage: cookieMaxAge,
-    })
-    .json({
-      user: { userId: user._id.toString(), userName: user.name },
-      accessToken: accessToken,
-    });
+  return res.status(200).json({
+    user: {
+      userId: user._id.toString(),
+      userName: user.username,
+      userAvatar: user.avatar,
+    },
+    accessToken: accessToken,
+  });
 });
 
 const signUpUser = asyncHandler(async (req, res) => {
-  const { email, name, password } = req.body;
-
-  // const locale = "en-" + countrycode;
-  const validEmail = validator.isEmail(email);
-  // const validPhoneNUmber = validator.isMobilePhone(phonenumber, locale, {
-  //   strictMode: true,
-  // });
-
-  if (name.trim() === "" || !validEmail || password.trim() === "") {
-    return res.status(401).json({ msg: "Invalid credentials from user." });
+  const file = req.file;
+  if (!file) {
+    return res
+      .status(401)
+      .json({ msg: "No avatar was uploaded upload your avatar." });
   }
 
-  const salt = await bcrypt.genSalt(10);
-  const hashed = await bcrypt.hash(password, salt);
+  try {
+    const { email, name, password } = req.body;
+    const validEmail = validator.isEmail(email);
 
-  const user = new User({
-    name,
-    email,
-    password: hashed,
-  });
-  const newUser = await user.save();
+    if (name.trim() === "" || !validEmail || password.trim() === "") {
+      return res.status(401).json({ msg: "Invalid credentials from user." });
+    }
 
-  const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user);
-  const jti = createJti();
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(password, salt);
+    const userName = generateUserName(name);
+    const avatarUrl = file.path.replace(/\\/g, "/").replace("public/", "");
 
-  await persistRefreshToken(
-    newUser,
-    refreshToken,
-    jti,
-    req.ip,
-    req.headers["user-agent"]
-  );
+    const user = new User({
+      name,
+      username: userName,
+      email,
+      hashed: hashed,
+      status: "online",
+      avatar: avatarUrl,
+      lastSeen: Date.now(),
+      isActive: true,
+    });
+    await user.save();
 
-  const cookieMaxAge = 30 * 24 * 60 * 60;
+    const jti = createJti();
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user, jti);
 
-  return res
-    .status(201)
-    .cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      maxage: cookieMaxAge,
-    })
-    .json({
-      user: { userId: newUser._id.toString(), userName: newUser.name },
+    // await persistRefreshToken(
+    //   user,
+    //   refreshToken,
+    //   jti,
+    //   req.ip,
+    //   req.headers["user-agent"],
+    // );
+
+    const cookieMaxAge = 30 * 24 * 60 * 60;
+
+    return res.status(201).json({
+      user: {
+        userId: user._id,
+        userName: user.username,
+        userAvatar: user.avatar,
+      },
       accessToken: accessToken,
     });
+  } catch (error) {
+    await fs
+      .unlink(file.path)
+      .catch((err) => console.log("ERROR DELETING FILE: ", error));
+
+    throw error;
+  }
 });
 
-const signUpUserVerify = asyncHandler(async (req, res) => {
-  const { phonenumber, code, countrycode } = req.body;
-  const locale = "en-" + countrycode;
-  const validPhoneNUmber = validator.isMobilePhone(phonenumber, locale, {
-    strictMode: true,
-  });
-  if (!validPhoneNUmber || code.trim().length !== 6) {
-    return res.status(401).json({ msg: "Invalid credentials from user." });
-  }
+// .cookie("refreshToken", refreshToken, {
+//   httpOnly: true,
+//   sameSite: "lax",
+//   maxAge: cookieMaxAge * 1000,
+// })
+// //secure: false,
 
-  const verifiedData = await verifyOtp(code);
-  if (!verifiedData.data || verifiedData.data.length === 0) {
-    return res.status(401).json({
-      msg: "Invalid or expired OTP",
-    });
-  }
-  //Save the user credential to the db.
-  //Generate new access token and refresh token.
-  //Create a new refesh token doc and save it to the db.
-  //Send access via response.
-  //And refresh token via the cookies.
-  return res.status(200).json({ msg: "User successfully registered." });
-});
-
-const signInUserVerify = asyncHandler(async (req, res) => {
-  const { phonenumber, code, countrycode } = req.body;
-  const locale = "en-" + countrycode;
-  const validPhoneNUmber = validator.isMobilePhone(phonenumber, locale, {
-    strictMode: true,
-  });
-  if (!validPhoneNUmber || code.trim().length !== 6) {
-    return res.status(401).json({ msg: "Invalid credentials from user." });
-  }
-
-  const verifiedData = await verifyOtp(code);
-  if (!verifiedData.data || verifiedData.data.length === 0) {
-    return res.status(401).json({
-      msg: "Invalid or expired OTP",
-    });
-  }
-  //Create a new referesh token schema in the db.
-  //Send the access token and refresh token to the user.
-  return res.status(200).json({ msg: "User signin successfully." });
-});
-
-export { signInUser, signInUserVerify, signUpUser, signUpUserVerify };
-
-//try {
-//   const data = await sendOtp(phonenumber + "/");
-//   return res.status(200).json({ msg: "Otp send successfully." });
-// } catch (error) {
-//   return res.status(500).json({ msg: error.message });
-// }
-
-// const locale = "en-" + countrycode;
-// const validPhoneNumber = validator.isMobilePhone(phonenumber, locale, {
-//   strictMode: true,
-// });
+export { signInUser, signUpUser };

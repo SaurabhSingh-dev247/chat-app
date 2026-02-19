@@ -75,7 +75,7 @@
 /* Message text */
 .message-text {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 400;
   line-height: 1.4; /* Tighter line height */
   color: #000;
@@ -90,7 +90,7 @@
 /* Timestamp */
 .message-time {
   display: block;
-  font-size: 1rem; /* Slightly smaller */
+  font-size: 0.9rem; /* Slightly smaller */
   color: rgba(0, 0, 0, 0.45);
   margin-top: 0.3rem;
   text-align: right;

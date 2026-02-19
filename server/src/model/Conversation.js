@@ -1,17 +1,39 @@
 import mongoose, { Schema } from "mongoose";
 
-const ConversationSchema = new Schema({
-  consversationType: { type: String, enums: ["direct", "group"] },
-  name: String,
-  participants: [Schema.Types.ObjectId],
-  admins: [Schema.Types.ObjectId],
-  lastmessage: String,
-  lastmessageAt: Date,
-  createdAt: {
-    type: Date,
-    default: Date.now,
+const ConversationSchema = new Schema(
+  {
+    conversationType: {
+      type: String,
+      enum: ["direct", "group"],
+      required: true,
+      index: true,
+    },
+    name: {
+      type: String,
+      trim: true,
+    },
+    participants: {
+      type: [Schema.Types.ObjectId],
+      ref: "User",
+      required: true,
+      index: true,
+    },
+    admins: {
+      type: [Schema.Types.ObjectId],
+      ref: "User",
+      default: [],
+    },
+    lastMessage: {
+      type: String,
+      default: null,
+    },
+    lastMessageAt: {
+      type: Date,
+      index: true,
+    },
   },
-  updatedAt: Date,
-});
+  { timestamps: true },
+);
+
 
 export default mongoose.model("Conversation", ConversationSchema);

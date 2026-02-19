@@ -6,61 +6,68 @@ import Input from "../../UI/Input.jsx";
 import Error from "../../UI/Error/Error.jsx";
 import axiosInstance from "../../api/axios";
 import validator from "validator";
+import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUserName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const buttonClass = `btn btn-signin${isLoading ? " loading" : ""}`;
 
-  // Form validation state
-  const isFormValid = validator.isEmail(email) && password.trim() !== "";
-
-  function handleSubmit(e){
+  function handleSubmit(e) {
     e.preventDefault();
   }
 
   async function handleSignIn(e) {
     e.preventDefault();
 
-    // Better validation with specific error messages
-    if (!validator.isEmail(email)) {
+    const emailValid = validator.isEmail(email);
+
+    if (emailValid && password.trim() !== "" && username.trim() !== "") {
+      try {
+        setIsLoading(true);
+        setError("");
+        const response = await axiosInstance.post("/auth/signin", {
+          email,
+          username,
+          password,
+        });
+        setEmail("");
+        setPassword("");
+        setUserName("");
+        dispatch(setUser(response.data));
+        dispatch(openDashBoard());
+        navigate("/dashboard");
+      } catch (error) {
+        console.log(error);
+        const errorMessage =
+          error.response?.data?.msg ||
+          error.response?.data?.message ||
+          "An unexpected error occurred. Please try again.";
+        setError(errorMessage);
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (!email.trim() && !username.trim() && !password.trim()) {
+      setError("Fill up all the fields.");
+      return;
+    } else if (!emailValid) {
       setError("Please enter a valid email address.");
       return;
-    }
-
-    if (!password.trim()) {
+    } else if (!password.trim()) {
       setError("Please enter your password.");
       return;
-    }
-
-    try {
-      setIsLoading(true);
-      setError("");
-
-      const response = await axiosInstance.post("/auth/signin", {
-        email,
-        password,
-      });
-
-      // Clear form on success
-      setEmail("");
-      setPassword("");
-
-      dispatch(setUser(response.data));
-      dispatch(openDashBoard());
-    } catch (error) {
-      // Better error handling
-      const errorMessage =
-        error.response?.data?.msg ||
-        error.response?.data?.message ||
-        "An unexpected error occurred. Please try again.";
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
+    } else if (!username.trim()) {
+      setError("Please enter your username.");
+      return;
+    } else {
+      setError("Enter your valid credentials.");
+      return;
     }
   }
 
@@ -86,6 +93,18 @@ export default function SignIn() {
               setError("");
             }}
           />
+          <Input
+            id="username"
+            name="username"
+            type="text"
+            label="UserName:"
+            placeholder="john@Doe_12"
+            value={username}
+            onChange={(e) => {
+              setUserName(e.target.value);
+              setError("");
+            }}
+          />
           <PasswordInput
             id="password"
             name="password"
@@ -103,7 +122,7 @@ export default function SignIn() {
           <button
             type="submit"
             className={buttonClass}
-            disabled={isLoading || !isFormValid}
+            disabled={isLoading}
             onClick={handleSignIn}
           >
             {isLoading ? "Signing In..." : "Sign In"}

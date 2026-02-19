@@ -15,6 +15,12 @@
   }
 }
 
+.selected {
+  background-color: rgb(236, 229, 229);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
 .friend-card-active {
   background-color: rgb(242, 239, 239);
 }
@@ -70,6 +76,18 @@
 
 .last-active-time {
   color: grey;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.today-active{
+  font-size: 0.95rem;
+}
+.active-now{
+  font-size: 1rem;
+  font-weight: bold;
+  color: rgb(1, 122, 1);
 }
 
 .user-messages-count {

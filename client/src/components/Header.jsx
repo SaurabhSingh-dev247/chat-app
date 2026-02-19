@@ -35,32 +35,3 @@ export default function Header() {
     </header>
   );
 }
-
-//  <header className="header">
-//         <div className="logo-container">
-//           {/* React Logo */}
-//
-//           <h1 className="logo-text">React Chat</h1>
-//         </div>
-
-//         <nav className="nav">
-//           <button
-//             onClick={() => setCurrentPage("home")}
-//             className={`nav-link ${currentPage === "home" ? "active" : ""}`}
-//           >
-//             Home
-//           </button>
-//           <button
-//             onClick={() => setCurrentPage("about")}
-//             className={`nav-link ${currentPage === "about" ? "active" : ""}`}
-//           >
-//             About
-//           </button>
-//           <button
-//             onClick={() => setCurrentPage("signin")}
-//             className={`nav-link ${currentPage === "signin" ? "active" : ""}`}
-//           >
-//             Sign In
-//           </button>
-//         </nav>
-//       </header>
