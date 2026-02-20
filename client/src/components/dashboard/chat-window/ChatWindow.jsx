@@ -162,7 +162,7 @@ export default function ChatWindow() {
           setError("");
           setPaginatedMessagesLoading(true);
           const response = await axios.post(
-            `http://localhost:5193/api/fetch/user-messages?limit=${5}&page=${page}`,
+            `http://localhost:5193/api/fetch/user-messages?limit=${10}&page=${page}`,
             { friendId: selectedFriend._id },
             {
               headers: {
