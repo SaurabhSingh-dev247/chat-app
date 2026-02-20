@@ -55,7 +55,7 @@ A full-stack real-time chat application built using the MERN stack with native W
   │      ├──   ├── friends
   │      ├──   ├── logout
   │      ├──   ├── settings
-  │      ├──   ├── varification # Ignore this directory
+  │      ├──   ├── verification # Ignore this directory
   │      ├──   ├── About.jsx
   │      ├──   ├── Header.jsx
   │      ├──   ├── Home.jsx
