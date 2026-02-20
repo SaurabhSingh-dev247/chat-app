@@ -66,6 +66,10 @@ export default function ChatWindow() {
       socketRef.current.send(JSON.stringify(firstMessage));
     };
 
+    const handleClose = () => {
+      console.log("CONNECTION CLOSED");
+    };
+
     const handleIncomingMessage = (event) => {
       const message = JSON.parse(event.data);
       console.log("INCOMING MESSAGE: ", message);
@@ -116,6 +120,7 @@ export default function ChatWindow() {
     socketRef.current.addEventListener("open", handleOpen);
     socketRef.current.addEventListener("message", handleIncomingMessage);
     socketRef.current.addEventListener("error", handleError);
+    socketRef.current.addEventListener("close", handleClose);
 
     return () => {
       if (
@@ -125,6 +130,7 @@ export default function ChatWindow() {
         socketRef.current.removeEventListener("open", handleOpen);
         socketRef.current.removeEventListener("message", handleIncomingMessage);
         socketRef.current.removeEventListener("error", handleError);
+        socketRef.current.removeEventListener("close", handleClose);
         socketRef.current.close();
       }
     };
@@ -148,8 +154,6 @@ export default function ChatWindow() {
       userChatsListRef.current.scrollTop = heightDifference;
     }
   }, [allMessages, isNewMessageArrived]);
-
-  //useEffect(() => {}, [allMessages]);
 
   useEffect(() => {
     if (page > 0 && hasMore) {
@@ -279,7 +283,7 @@ export default function ChatWindow() {
               }}
             />
             <ol
-              className={styles["user-chats-wrapper"]}
+              className={`${styles["user-chats-wrapper"]} ${isPaginatedMessagesLoading ? styles["overflow-disabled"] : styles["overflow-enabled"]}`}
               onScroll={handleChatsScroll}
               ref={userChatsListRef}
             >
